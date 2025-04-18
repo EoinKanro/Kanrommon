@@ -11,6 +11,5 @@ subprojects {
     dependencies {
         compileOnly "org.projectlombok:lombok:${lombok_version}"
         annotationProcessor "org.projectlombok:lombok:${lombok_version}"
-        implementation("com.google.code.gson:gson:${gson_version}")
     }
 }
