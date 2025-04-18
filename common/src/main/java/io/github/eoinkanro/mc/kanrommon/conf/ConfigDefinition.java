@@ -7,7 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class ConfigDefinition<T> {
+public abstract class ConfigDefinition<T> {
 
   @NonNull
   private String name;
