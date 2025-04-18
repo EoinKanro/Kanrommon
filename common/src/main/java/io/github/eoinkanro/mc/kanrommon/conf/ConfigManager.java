@@ -33,46 +33,25 @@ public class ConfigManager {
 
   public ConfigManager(Path configFolderPath, String configName) {
     this.configFilePath = configFolderPath.resolve(configName + ".json");
-
-    if (!Files.exists(configFilePath)) {
-      config = new JsonObject();
-      return;
-    }
-
-    try(Stream<String> lines = Files.lines(configFilePath)) {
-      String jsonString = lines.collect(Collectors.joining());
-      config = gson.fromJson(jsonString, JsonObject.class);
-    } catch (Exception e) {
-      LOG.warn("Error reading config file: {}. Creating backup and new config...", configFilePath.toAbsolutePath());
-      config = new JsonObject();
-      createBackup(configFilePath);
-    }
-  }
-
-  private void createBackup(Path configFilePath) {
-    try {
-      Files.move(configFilePath, configFilePath.resolve("_bkp"), REPLACE_EXISTING);
-    } catch (Exception e) {
-      LOG.warn("Error creating backup file for: {}", configFilePath.toAbsolutePath());
-    }
+    reload();
   }
 
   /**
-   * Read value from config file to definition
+   * Read value from config json to definition
    */
   public void read(ConfigBooleanDefinition definition) {
     read(definition, () -> Boolean.parseBoolean(config.get(definition.getParameterName()).toString()));
   }
 
   /**
-   * Read value from config file to definition
+   * Read value from config json to definition
    */
   public void read(ConfigStringDefinition definition) {
     read(definition, () -> config.get(definition.getParameterName()).toString());
   }
 
   /**
-   * Read value from config file to definition
+   * Read value from config json to definition
    */
   public void read(ConfigListDefinition definition) {
     read(definition, () -> {
@@ -88,14 +67,14 @@ public class ConfigManager {
   }
 
   /**
-   * Read value from config file to definition
+   * Read value from config json to definition
    */
   public void read(ConfigIntDefinition definition) {
     readNumber(definition, () -> Integer.parseInt(config.get(definition.getParameterName()).toString()));
   }
 
   /**
-   * Read value from config file to definition
+   * Read value from config json to definition
    */
   public void read(ConfigDoubleDefinition definition) {
     readNumber(definition, () -> Double.parseDouble(config.get(definition.getParameterName()).toString()));
@@ -124,14 +103,14 @@ public class ConfigManager {
   }
 
   /**
-   * Save value from definition to config. See {@link #save()}
+   * Save value from definition to config json. See {@link #save()}
    */
   public void write(ConfigDefinition<?> definition) {
     config.add(definition.getParameterName(), gson.toJsonTree(definition.getCurrentValue()));
   }
 
   /**
-   * Save value from definition to config. See {@link #save()}
+   * Save value from definition to config json. See {@link #save()}
    */
   public void writeNumber(ConfigNumberDefinition<?> definition) {
     correctNumber(definition);
@@ -147,7 +126,7 @@ public class ConfigManager {
   }
 
   /**
-   * Save config to file
+   * Save config json to file
    */
   public void save() {
     try {
@@ -155,6 +134,33 @@ public class ConfigManager {
       Files.writeString(configFilePath, jsonString, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     } catch (Exception e) {
       LOG.error("Can't save config file: {}", configFilePath.toAbsolutePath());
+    }
+  }
+
+  /**
+   * Reload config json from file
+   */
+  public void reload() {
+    if (!Files.exists(configFilePath)) {
+      config = new JsonObject();
+      return;
+    }
+
+    try(Stream<String> lines = Files.lines(configFilePath)) {
+      String jsonString = lines.collect(Collectors.joining());
+      config = gson.fromJson(jsonString, JsonObject.class);
+    } catch (Exception e) {
+      LOG.warn("Error reading config file: {}. Creating backup and new config...", configFilePath.toAbsolutePath());
+      config = new JsonObject();
+      createBackup(configFilePath);
+    }
+  }
+
+  private void createBackup(Path configFilePath) {
+    try {
+      Files.move(configFilePath, configFilePath.resolve("_bkp"), REPLACE_EXISTING);
+    } catch (Exception e) {
+      LOG.warn("Error creating backup file for: {}", configFilePath.toAbsolutePath());
     }
   }
 
