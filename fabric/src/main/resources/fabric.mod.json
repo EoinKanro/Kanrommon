@@ -12,7 +12,7 @@
         "sources": "${project_issues_url}"
     },
     "license": "${license}",
-    "icon": "${mod_id}.png",
+    "icon": "icon.png",
     "environment": "*",
     "entrypoints": {
         "main": [
