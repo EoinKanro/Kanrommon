@@ -6,7 +6,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-public class ConfigNumberDefinition<T> extends ConfigDefinition<T> {
+public abstract class ConfigNumberDefinition<T extends Number & Comparable<T>> extends ConfigDefinition<T> {
 
   @NonNull
   private T minValue;
