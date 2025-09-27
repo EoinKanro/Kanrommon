@@ -1,0 +1,59 @@
+plugins {
+    id 'multiloader-common'
+    id 'net.neoforged.moddev'
+    id 'maven-publish'
+}
+
+group = 'io.github.eoinkanro.mc'
+archivesBaseName = 'kanrommon'
+
+neoForge {
+    neoFormVersion = neo_form_version
+    // Automatically enable AccessTransformers if the file exists
+    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.add(at.absolutePath)
+    }
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
+    }
+}
+
+configurations {
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+}
+
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonResources sourceSets.main.resources.sourceDirectories.singleFile
+}
+
+publishing {
+    publications {
+        customMaven(MavenPublication) {
+            groupId = group
+            artifactId = archivesBaseName
+            version = version
+
+            artifact("$buildDir/libs/${archivesBaseName}-${version}.jar") {
+                builtBy tasks.jar
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "LocalRepo"
+            url = uri("file://${projectDir}/build/mvn")
+        }
+    }
+}
+
