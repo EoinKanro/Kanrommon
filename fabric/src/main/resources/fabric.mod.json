@@ -9,7 +9,7 @@
     ],
     "contact": {
         "homepage": "${project_url}",
-        "sources": "${project_issues_url}"
+        "issues": "${project_issues_url}"
     },
     "license": "${license}",
     "icon": "icon.png",
