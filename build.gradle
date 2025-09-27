@@ -37,7 +37,7 @@ subprojects {
         }
     }
 
-    tasks.matching { it.name == 'build' }.configureEach {
+    tasks.matching { it.name == 'assemble' }.configureEach {
         dependsOn(tasks.named("copyIcon"))
     }
 }
