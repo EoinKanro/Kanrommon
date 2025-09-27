@@ -36,6 +36,8 @@ artifacts {
     commonResources sourceSets.main.resources.sourceDirectories.singleFile
 }
 
+
+//call publishCustomMavenPublicationToLocalRepoRepository
 publishing {
     publications {
         customMaven(MavenPublication) {
@@ -49,10 +51,11 @@ publishing {
         }
     }
 
+    File mavenRepo = new File(rootDir.parentFile.getAbsolutePath(), "maven")
     repositories {
         maven {
             name = "LocalRepo"
-            url = uri("file://${projectDir}/build/mvn")
+            url = mavenRepo
         }
     }
 }
