@@ -40,14 +40,14 @@ public class ConfigManager {
    * Read value from config json to definition
    */
   public void read(ConfigBooleanDefinition definition) {
-    read(definition, () -> Boolean.parseBoolean(config.get(definition.getParameterName()).toString()));
+    read(definition, () -> config.get(definition.getParameterName()).getAsBoolean());
   }
 
   /**
    * Read value from config json to definition
    */
   public void read(ConfigStringDefinition definition) {
-    read(definition, () -> config.get(definition.getParameterName()).toString());
+    read(definition, () -> config.get(definition.getParameterName()).getAsString());
   }
 
   /**
@@ -55,7 +55,7 @@ public class ConfigManager {
    */
   public void read(ConfigListDefinition definition) {
     read(definition, () -> {
-      JsonArray array = (JsonArray) config.get(definition.getParameterName());
+      JsonArray array = config.get(definition.getParameterName()).getAsJsonArray();
 
       List<String> result = new ArrayList<>();
       for (JsonElement element : array) {
@@ -70,14 +70,14 @@ public class ConfigManager {
    * Read value from config json to definition
    */
   public void read(ConfigIntDefinition definition) {
-    readNumber(definition, () -> Integer.parseInt(config.get(definition.getParameterName()).toString()));
+    readNumber(definition, () -> config.get(definition.getParameterName()).getAsInt());
   }
 
   /**
    * Read value from config json to definition
    */
   public void read(ConfigDoubleDefinition definition) {
-    readNumber(definition, () -> Double.parseDouble(config.get(definition.getParameterName()).toString()));
+    readNumber(definition, () -> config.get(definition.getParameterName()).getAsDouble());
   }
 
   private <T extends Number & Comparable<T>> void readNumber(ConfigNumberDefinition<T> definition, Supplier<T> supplier) {
